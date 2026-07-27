@@ -2,6 +2,9 @@ plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.compose.compiler)
   alias(libs.plugins.kotlin.serialization)
+  alias(libs.plugins.ksp)
+  alias(libs.plugins.hilt)
+  alias(libs.plugins.google.services)
 }
 
 android {
@@ -81,4 +84,37 @@ dependencies {
   implementation(libs.androidx.navigation3.ui)
   implementation(libs.androidx.navigation3.runtime)
   implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+
+  // Hilt
+  implementation(libs.hilt.android)
+  ksp(libs.hilt.compiler)
+  implementation(libs.hilt.navigation.compose)
+
+  // Room
+  implementation(libs.room.runtime)
+  ksp(libs.room.compiler)
+  implementation(libs.room.ktx)
+
+  // Retrofit & OkHttp
+  implementation(libs.retrofit)
+  implementation(libs.retrofit.converter.gson)
+  implementation(libs.okhttp)
+  implementation(libs.okhttp.logging)
+
+  // Firebase
+  implementation(platform(libs.firebase.bom))
+  implementation(libs.firebase.messaging)
+  implementation(libs.firebase.analytics)
+
+  // Supabase
+  implementation(libs.supabase.gotrue)
+  implementation(libs.ktor.client.android)
+
+  // DataStore
+  implementation(libs.datastore.preferences)
+
+  // WorkManager & Hilt integration
+  implementation(libs.work.runtime.ktx)
+  implementation(libs.hilt.work)
+  ksp(libs.hilt.work.compiler)
 }
