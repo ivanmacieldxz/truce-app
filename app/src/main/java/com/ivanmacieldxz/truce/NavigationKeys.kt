@@ -3,4 +3,8 @@ package com.ivanmacieldxz.truce
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
-@Serializable data object Main : NavKey
+@Serializable
+object Auth : NavKey
+
+@Serializable
+object Dashboard : NavKey

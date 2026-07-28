@@ -12,14 +12,28 @@ import com.ivanmacieldxz.truce.theme.TruceTheme
 
 import dagger.hilt.android.AndroidEntryPoint
 
+import androidx.activity.viewModels
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+  private val viewModel: MainViewModel by viewModels()
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
     enableEdgeToEdge()
     setContent {
-      TruceTheme { Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) { MainNavigation() } }
+      val isLoggedIn by viewModel.isUserLoggedIn.collectAsStateWithLifecycle()
+      
+      TruceTheme { 
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) { 
+            if (isLoggedIn != null) {
+                MainNavigation(isLoggedIn = isLoggedIn!!) 
+            }
+        } 
+      }
     }
   }
 }

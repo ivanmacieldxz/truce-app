@@ -8,20 +8,34 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.ivanmacieldxz.truce.ui.main.MainScreen
+import com.ivanmacieldxz.truce.ui.auth.AuthScreen
+import com.ivanmacieldxz.truce.ui.dashboard.DashboardScreen
 
 @Composable
-fun MainNavigation() {
-  val backStack = rememberNavBackStack(Main)
+fun MainNavigation(isLoggedIn: Boolean) {
+    val startDestination = if (isLoggedIn) Dashboard else Auth
+    val backStack = rememberNavBackStack(startDestination)
+    
+    // We update the backstack root if the login state changes
+    if (isLoggedIn && backStack.lastOrNull() == Auth) {
+        backStack.clear()
+        backStack.add(Dashboard)
+    } else if (!isLoggedIn && backStack.lastOrNull() == Dashboard) {
+        backStack.clear()
+        backStack.add(Auth)
+    }
 
-  NavDisplay(
-    backStack = backStack,
-    onBack = { backStack.removeLastOrNull() },
-    entryProvider =
-      entryProvider {
-        entry<Main> {
-          MainScreen(onItemClick = { navKey -> backStack.add(navKey) }, modifier = Modifier.safeDrawingPadding().padding(16.dp))
-        }
-      },
-  )
+    NavDisplay(
+        backStack = backStack,
+        onBack = { backStack.removeLastOrNull() },
+        entryProvider =
+        entryProvider {
+            entry<Auth> {
+                AuthScreen()
+            }
+            entry<Dashboard> {
+                DashboardScreen()
+            }
+        },
+    )
 }
