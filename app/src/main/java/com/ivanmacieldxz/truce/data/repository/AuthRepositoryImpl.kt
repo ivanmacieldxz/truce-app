@@ -39,7 +39,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun signUp(email: String, password: String, username: String): Result<Unit> {
         return try {
-            supabaseClient.auth.signUpWith(Email) {
+            val result = supabaseClient.auth.signUpWith(Email) {
                 this.email = email
                 this.password = password
                 // Passing the username to user_metadata
@@ -47,9 +47,15 @@ class AuthRepositoryImpl @Inject constructor(
                     put("username", username)
                 }
             }
-            // Trigger backend getMyProfile to ensure user is synced and created
-            apiService.getMyProfile()
-            Result.success(Unit)
+            
+            // If email confirmations are enabled, current session will be null
+            if (supabaseClient.auth.currentAccessTokenOrNull() != null) {
+                apiService.getMyProfile()
+                Result.success(Unit)
+            } else {
+                // Return a specific error/message to tell user to check email, or just success
+                Result.failure(Exception("Por favor, revisá tu casilla de correo para confirmar el registro antes de iniciar sesión."))
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }
