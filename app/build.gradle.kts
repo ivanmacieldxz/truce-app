@@ -26,11 +26,11 @@ android {
         versionName = "1.0"
         
         val supabaseUrl = localProperties.getProperty("SUPABASE_URL") ?: "\"\""
-        val supabaseAnonKey = localProperties.getProperty("SUPABASE_ANON_KEY") ?: "\"\""
+        val supabasePublishableKey = localProperties.getProperty("SUPABASE_PUBLISHABLE_KEY") ?: "\"\""
         val backendUrl = localProperties.getProperty("BACKEND_URL") ?: "\"https://truce-app-backend.onrender.com/api/v1/\""
         
         buildConfigField("String", "SUPABASE_URL", supabaseUrl)
-        buildConfigField("String", "SUPABASE_ANON_KEY", supabaseAnonKey)
+        buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", supabasePublishableKey)
         buildConfigField("String", "BACKEND_URL", backendUrl)
     }
 
