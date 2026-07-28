@@ -32,6 +32,12 @@ class AuthRepositoryImpl @Inject constructor(
             // Trigger backend getMyProfile to ensure user is synced
             apiService.getMyProfile()
             Result.success(Unit)
+        } catch (e: retrofit2.HttpException) {
+            if (e.code() == 401) {
+                Result.failure(Exception("Error 401: El token de sesión no es válido o el backend de Render no lo reconoció. Verificá SUPABASE_JWT_SECRET en tu servidor."))
+            } else {
+                Result.failure(Exception("Error del Servidor al obtener el perfil: HTTP ${e.code()}"))
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -39,6 +45,12 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun signUp(email: String, password: String, username: String): Result<Unit> {
         return try {
+            try {
+                supabaseClient.auth.signOut()
+            } catch (e: Exception) {
+                // Ignore signout errors
+            }
+
             val result = supabaseClient.auth.signUpWith(Email) {
                 this.email = email
                 this.password = password
@@ -53,8 +65,14 @@ class AuthRepositoryImpl @Inject constructor(
                 apiService.getMyProfile()
                 Result.success(Unit)
             } else {
-                // Return a specific error/message to tell user to check email, or just success
+                // Return a specific error/message to tell user to check email
                 Result.failure(Exception("Por favor, revisá tu casilla de correo para confirmar el registro antes de iniciar sesión."))
+            }
+        } catch (e: retrofit2.HttpException) {
+            if (e.code() == 401) {
+                Result.failure(Exception("Error de Autenticación con el Backend (HTTP 401). Verificá que el SUPABASE_JWT_SECRET en tu backend de Render coincida con el de este proyecto."))
+            } else {
+                Result.failure(Exception("Error del Servidor: HTTP ${e.code()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
