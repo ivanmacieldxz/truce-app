@@ -30,7 +30,13 @@ class AuthRepositoryImpl @Inject constructor(
                 this.password = password
             }
             // Trigger backend getMyProfile to ensure user is synced
-            apiService.getMyProfile()
+            try {
+                apiService.getMyProfile()
+            } catch (e: Exception) {
+                // If backend fails, we must sign out to prevent false-positive login state
+                try { supabaseClient.auth.signOut() } catch (ignored: Exception) {}
+                throw e
+            }
             Result.success(Unit)
         } catch (e: retrofit2.HttpException) {
             if (e.code() == 401) {
