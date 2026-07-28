@@ -1,4 +1,4 @@
-package com.example.truce.ui.main
+package com.ivanmacieldxz.truce.ui.main
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
@@ -9,8 +9,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
-import com.example.truce.data.DefaultDataRepository
-import com.example.truce.theme.TruceTheme
+import com.ivanmacieldxz.truce.data.DefaultDataRepository
+import com.ivanmacieldxz.truce.theme.TruceTheme
 
 @Composable
 fun MainScreen(

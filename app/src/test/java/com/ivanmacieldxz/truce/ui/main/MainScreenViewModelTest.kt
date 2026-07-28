@@ -1,6 +1,6 @@
-package com.example.truce.ui.main
+package com.ivanmacieldxz.truce.ui.main
 
-import com.example.truce.data.DataRepository
+import com.ivanmacieldxz.truce.data.DataRepository
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first

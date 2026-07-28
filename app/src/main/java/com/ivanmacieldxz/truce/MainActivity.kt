@@ -1,4 +1,4 @@
-package com.example.truce
+package com.ivanmacieldxz.truce
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.truce.theme.TruceTheme
+import com.ivanmacieldxz.truce.theme.TruceTheme
 
 import dagger.hilt.android.AndroidEntryPoint
 

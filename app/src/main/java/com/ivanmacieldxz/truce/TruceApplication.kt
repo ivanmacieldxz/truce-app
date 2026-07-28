@@ -1,4 +1,4 @@
-package com.example.truce
+package com.ivanmacieldxz.truce
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

@@ -1,4 +1,4 @@
-package com.example.truce.theme
+package com.ivanmacieldxz.truce.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

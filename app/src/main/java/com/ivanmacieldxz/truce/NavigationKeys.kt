@@ -1,4 +1,4 @@
-package com.example.truce
+package com.ivanmacieldxz.truce
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable

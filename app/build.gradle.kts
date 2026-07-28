@@ -8,10 +8,10 @@ plugins {
 }
 
 android {
-    namespace = "com.example.truce"
+    namespace = "com.ivanmacieldxz.truce"
     compileSdk = 36
     defaultConfig {
-        applicationId = "com.example.truce"
+        applicationId = "com.ivanmacieldxz.truce"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

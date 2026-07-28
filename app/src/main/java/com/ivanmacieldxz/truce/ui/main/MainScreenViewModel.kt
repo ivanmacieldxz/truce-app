@@ -1,9 +1,9 @@
-package com.example.truce.ui.main
+package com.ivanmacieldxz.truce.ui.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.truce.data.DataRepository
-import com.example.truce.ui.main.MainScreenUiState.Success
+import com.ivanmacieldxz.truce.data.DataRepository
+import com.ivanmacieldxz.truce.ui.main.MainScreenUiState.Success
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
