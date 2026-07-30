@@ -22,7 +22,8 @@ fun TruceTextField(
     errorMessage: String? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    singleLine: Boolean = true
+    singleLine: Boolean = true,
+    trailingIcon: @Composable (() -> Unit)? = null
 ) {
     OutlinedTextField(
         value = value,
@@ -36,6 +37,7 @@ fun TruceTextField(
         visualTransformation = visualTransformation,
         keyboardOptions = keyboardOptions,
         singleLine = singleLine,
+        trailingIcon = trailingIcon,
         shape = RoundedCornerShape(8.dp),
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
