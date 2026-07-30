@@ -21,7 +21,10 @@ object SupabaseModule {
             supabaseUrl = BuildConfig.SUPABASE_URL,
             supabaseKey = BuildConfig.SUPABASE_PUBLISHABLE_KEY
         ) {
-            install(Auth)
+            install(Auth) {
+                scheme = "truce"
+                host = "login"
+            }
         }
     }
 }
