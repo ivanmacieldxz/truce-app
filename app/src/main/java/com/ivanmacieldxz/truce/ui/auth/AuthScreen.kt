@@ -85,6 +85,16 @@ fun AuthScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
 
+            if (uiState.successMessage != null) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = uiState.successMessage!!,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
+            }
+
             if (uiState.error != null) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
@@ -113,6 +123,23 @@ fun AuthScreen(
                     text = if (uiState.isLoginMode) "Don't have an account? Sign Up" else "Already have an account? Log In",
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.SemiBold
+                )
+            }
+        }
+        
+        // Debug Error Section at the bottom
+        if (uiState.debugError != null) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.9f))
+                    .padding(8.dp)
+            ) {
+                Text(
+                    text = "Debug Info: ${uiState.debugError}",
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                    style = MaterialTheme.typography.labelSmall,
+                    textAlign = TextAlign.Start
                 )
             }
         }

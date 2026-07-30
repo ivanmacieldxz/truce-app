@@ -12,6 +12,10 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import javax.inject.Inject
 
+import com.ivanmacieldxz.truce.domain.repository.AuthException
+import io.github.jan.supabase.exceptions.RestException
+import io.github.jan.supabase.exceptions.HttpRequestException
+
 class AuthRepositoryImpl @Inject constructor(
     private val supabaseClient: SupabaseClient,
     private val apiService: BackendApiService
@@ -23,7 +27,7 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun login(email: String, password: String): Result<Unit> {
+    override suspend fun login(email: String, password: String): Result<String> {
         return try {
             supabaseClient.auth.signInWith(Email) {
                 this.email = email
@@ -37,19 +41,13 @@ class AuthRepositoryImpl @Inject constructor(
                 try { supabaseClient.auth.signOut() } catch (ignored: Exception) {}
                 throw e
             }
-            Result.success(Unit)
-        } catch (e: retrofit2.HttpException) {
-            if (e.code() == 401) {
-                Result.failure(Exception("Error 401: El token de sesión no es válido o el backend de Render no lo reconoció. Verificá SUPABASE_JWT_SECRET en tu servidor."))
-            } else {
-                Result.failure(Exception("Error del Servidor al obtener el perfil: HTTP ${e.code()}"))
-            }
+            Result.success("Sesión iniciada correctamente")
         } catch (e: Exception) {
-            Result.failure(e)
+            Result.failure(mapException(e))
         }
     }
 
-    override suspend fun signUp(email: String, password: String, username: String): Result<Unit> {
+    override suspend fun signUp(email: String, password: String, username: String): Result<String> {
         return try {
             try {
                 supabaseClient.auth.signOut()
@@ -69,19 +67,12 @@ class AuthRepositoryImpl @Inject constructor(
             // If email confirmations are enabled, current session will be null
             if (supabaseClient.auth.currentAccessTokenOrNull() != null) {
                 apiService.getMyProfile()
-                Result.success(Unit)
+                Result.success("Registro exitoso")
             } else {
-                // Return a specific error/message to tell user to check email
-                Result.failure(Exception("Por favor, revisá tu casilla de correo para confirmar el registro antes de iniciar sesión."))
-            }
-        } catch (e: retrofit2.HttpException) {
-            if (e.code() == 401) {
-                Result.failure(Exception("Error de Autenticación con el Backend (HTTP 401). Verificá que el SUPABASE_JWT_SECRET en tu backend de Render coincida con el de este proyecto."))
-            } else {
-                Result.failure(Exception("Error del Servidor: HTTP ${e.code()}"))
+                Result.success("Por favor, revisá tu casilla de correo para confirmar el registro antes de iniciar sesión.")
             }
         } catch (e: Exception) {
-            Result.failure(e)
+            Result.failure(mapException(e))
         }
     }
 
@@ -90,7 +81,55 @@ class AuthRepositoryImpl @Inject constructor(
             supabaseClient.auth.signOut()
             Result.success(Unit)
         } catch (e: Exception) {
-            Result.failure(e)
+            Result.failure(mapException(e))
+        }
+    }
+
+    private fun mapException(e: Exception): Exception {
+        return when (e) {
+            is retrofit2.HttpException -> {
+                if (e.code() == 401) {
+                    AuthException(
+                        userMessage = "Ocurrió un problema de autenticación con el servidor.",
+                        debugMessage = "Error HTTP 401: El token de sesión no es válido o el backend de Render no lo reconoció. Verificá SUPABASE_JWT_SECRET en tu servidor."
+                    )
+                } else {
+                    AuthException(
+                        userMessage = "Hubo un problema de conexión con el servidor. Intentá de nuevo.",
+                        debugMessage = "Error del Servidor al obtener el perfil: HTTP ${e.code()}"
+                    )
+                }
+            }
+            is RestException -> {
+                val errorMsg = e.error.lowercase()
+                val description = e.description?.lowercase() ?: ""
+                val fullError = "$errorMsg $description"
+                
+                val userFriendlyMessage = when {
+                    fullError.contains("invalid login credentials") -> "Credenciales inválidas. Verificá tu correo y contraseña."
+                    fullError.contains("user already registered") -> "Ya existe un usuario con este correo."
+                    fullError.contains("password should be at least") -> "La contraseña debe tener al menos 6 caracteres."
+                    fullError.contains("rate limit") -> "Demasiados intentos. Por favor, intentá más tarde."
+                    fullError.contains("email link is invalid") || fullError.contains("token has expired") -> "El enlace es inválido o expiró."
+                    else -> "Ocurrió un error al procesar tu solicitud."
+                }
+                
+                AuthException(
+                    userMessage = userFriendlyMessage,
+                    debugMessage = "Supabase RestException: ${e.message}"
+                )
+            }
+            is HttpRequestException -> {
+                AuthException(
+                    userMessage = "No se pudo conectar. Verificá tu conexión a internet.",
+                    debugMessage = "Supabase HttpRequestException: ${e.message}"
+                )
+            }
+            is AuthException -> e
+            else -> AuthException(
+                userMessage = "Ocurrió un error inesperado.",
+                debugMessage = "Exception: ${e.message}"
+            )
         }
     }
 }
