@@ -20,11 +20,11 @@ class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    val isUserLoggedIn: StateFlow<Boolean> = authRepository.isUserLoggedIn()
+    val isUserLoggedIn: StateFlow<Boolean?> = authRepository.isUserLoggedIn()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = false
+            initialValue = null
         )
 
     private val _uiState = MutableStateFlow(AuthUiState())
