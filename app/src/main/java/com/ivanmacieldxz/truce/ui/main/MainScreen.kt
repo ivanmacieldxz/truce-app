@@ -1,55 +1,78 @@
 package com.ivanmacieldxz.truce.ui.main
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Inbox
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Inbox
+import androidx.compose.material.icons.outlined.People
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation3.runtime.NavKey
-import com.ivanmacieldxz.truce.data.DefaultDataRepository
-import com.ivanmacieldxz.truce.theme.TruceTheme
+import androidx.compose.ui.graphics.vector.ImageVector
+import com.ivanmacieldxz.truce.ui.dashboard.DashboardScreen
+import com.ivanmacieldxz.truce.ui.friendships.FriendshipsScreen
+import com.ivanmacieldxz.truce.ui.inbox.InboxScreen
+import com.ivanmacieldxz.truce.ui.preferences.PreferencesScreen
 
-@Composable
-fun MainScreen(
-  onItemClick: (NavKey) -> Unit,
-  modifier: Modifier = Modifier,
-  viewModel: MainScreenViewModel = viewModel { MainScreenViewModel(DefaultDataRepository()) },
+enum class MainTab(
+    val title: String,
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector
 ) {
-  val state by viewModel.uiState.collectAsStateWithLifecycle()
-  when (state) {
-    MainScreenUiState.Loading -> {
-      // Blank
+    Dashboard("Dashboard", Icons.Filled.Home, Icons.Outlined.Home),
+    Friendships("Friends", Icons.Filled.People, Icons.Outlined.People),
+    Inbox("Inbox", Icons.Filled.Inbox, Icons.Outlined.Inbox),
+    Preferences("Prefs", Icons.Filled.Settings, Icons.Outlined.Settings)
+}
+
+@Composable
+fun MainScreen() {
+    var selectedTab by rememberSaveable { mutableStateOf(MainTab.Dashboard) }
+
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                MainTab.values().forEach { tab ->
+                    val isSelected = selectedTab == tab
+                    NavigationBarItem(
+                        selected = isSelected,
+                        onClick = { selectedTab = tab },
+                        icon = {
+                            Icon(
+                                imageVector = if (isSelected) tab.selectedIcon else tab.unselectedIcon,
+                                contentDescription = tab.title
+                            )
+                        },
+                        label = { Text(text = tab.title) }
+                    )
+                }
+            }
+        }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier.padding(paddingValues).fillMaxSize()
+        ) {
+            when (selectedTab) {
+                MainTab.Dashboard -> DashboardScreen()
+                MainTab.Friendships -> FriendshipsScreen()
+                MainTab.Inbox -> InboxScreen()
+                MainTab.Preferences -> PreferencesScreen()
+            }
+        }
     }
-    is MainScreenUiState.Success -> {
-      MainScreen(data = (state as MainScreenUiState.Success).data, modifier = modifier)
-    }
-    is MainScreenUiState.Error -> {
-      Text("Error loading data: ${(state as MainScreenUiState.Error).throwable.message}")
-    }
-  }
-}
-
-@Composable
-internal fun MainScreen(data: List<String>, modifier: Modifier = Modifier) {
-  Column(modifier) { data.forEach { Greeting(it) } }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-  Text(text = "Hello $name!", modifier = modifier)
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MainScreenPreview() {
-  TruceTheme { MainScreen(listOf("Android")) }
-}
-
-@Preview(showBackground = true, widthDp = 340)
-@Composable
-fun MainScreenPortraitPreview() {
-  TruceTheme { MainScreen(listOf("Android")) }
 }

@@ -1,4 +1,4 @@
-package com.ivanmacieldxz.truce.ui.dashboard
+package com.ivanmacieldxz.truce.ui.friendships
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun DashboardScreen() {
+fun FriendshipsScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -29,7 +29,7 @@ fun DashboardScreen() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Dashboard",
+                text = "Friendships",
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
@@ -39,7 +39,7 @@ fun DashboardScreen() {
             Spacer(modifier = Modifier.height(32.dp))
             
             Text(
-                text = "- Estadísticas de uso diarias/semanales",
+                text = "(Mocks próximamente)",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -47,7 +47,7 @@ fun DashboardScreen() {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "- Apps bloqueadas y limitadores activos",
+                text = "- Búsqueda de amigos por username",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -55,7 +55,7 @@ fun DashboardScreen() {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "- Resumen de Time Requests",
+                text = "- Lista de amigos actuales",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

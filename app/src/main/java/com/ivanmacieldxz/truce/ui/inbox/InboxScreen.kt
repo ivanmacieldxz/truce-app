@@ -1,4 +1,4 @@
-package com.ivanmacieldxz.truce.ui.dashboard
+package com.ivanmacieldxz.truce.ui.inbox
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun DashboardScreen() {
+fun InboxScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -29,7 +29,7 @@ fun DashboardScreen() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Dashboard",
+                text = "Inbox",
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
@@ -39,7 +39,7 @@ fun DashboardScreen() {
             Spacer(modifier = Modifier.height(32.dp))
             
             Text(
-                text = "- Estadísticas de uso diarias/semanales",
+                text = "(Mocks próximamente)",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -47,7 +47,7 @@ fun DashboardScreen() {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "- Apps bloqueadas y limitadores activos",
+                text = "- Solicitudes de tiempo pendientes (Time Requests)",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -55,7 +55,7 @@ fun DashboardScreen() {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "- Resumen de Time Requests",
+                text = "- Solicitudes de amistad entrantes",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
