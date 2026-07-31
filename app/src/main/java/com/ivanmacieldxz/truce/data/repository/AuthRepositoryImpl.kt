@@ -21,9 +21,13 @@ class AuthRepositoryImpl @Inject constructor(
     private val apiService: BackendApiService
 ) : AuthRepository {
 
-    override fun isUserLoggedIn(): Flow<Boolean> {
+    override fun isUserLoggedIn(): Flow<Boolean?> {
         return supabaseClient.auth.sessionStatus.map { status ->
-            status is SessionStatus.Authenticated
+            when (status) {
+                is SessionStatus.Initializing -> null
+                is SessionStatus.Authenticated -> true
+                else -> false
+            }
         }
     }
 

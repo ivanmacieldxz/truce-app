@@ -8,3 +8,6 @@ object Auth : NavKey
 
 @Serializable
 object Dashboard : NavKey
+
+@Serializable
+object Main : NavKey

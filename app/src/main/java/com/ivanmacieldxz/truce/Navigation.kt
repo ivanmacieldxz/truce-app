@@ -9,18 +9,19 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.ivanmacieldxz.truce.ui.auth.AuthScreen
-import com.ivanmacieldxz.truce.ui.dashboard.DashboardScreen
+
+import com.ivanmacieldxz.truce.ui.main.MainScreen
 
 @Composable
 fun MainNavigation(isLoggedIn: Boolean) {
-    val startDestination = if (isLoggedIn) Dashboard else Auth
+    val startDestination = if (isLoggedIn) Main else Auth
     val backStack = rememberNavBackStack(startDestination)
     
     // We update the backstack root if the login state changes
     if (isLoggedIn && backStack.lastOrNull() == Auth) {
         backStack.clear()
-        backStack.add(Dashboard)
-    } else if (!isLoggedIn && backStack.lastOrNull() == Dashboard) {
+        backStack.add(Main)
+    } else if (!isLoggedIn && backStack.lastOrNull() == Main) {
         backStack.clear()
         backStack.add(Auth)
     }
@@ -33,8 +34,8 @@ fun MainNavigation(isLoggedIn: Boolean) {
             entry<Auth> {
                 AuthScreen()
             }
-            entry<Dashboard> {
-                DashboardScreen()
+            entry<Main> {
+                MainScreen()
             }
         },
     )

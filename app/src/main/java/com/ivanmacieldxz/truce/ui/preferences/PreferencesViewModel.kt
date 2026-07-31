@@ -1,4 +1,4 @@
-package com.ivanmacieldxz.truce.ui.dashboard
+package com.ivanmacieldxz.truce.ui.preferences
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DashboardViewModel @Inject constructor(
+class PreferencesViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 

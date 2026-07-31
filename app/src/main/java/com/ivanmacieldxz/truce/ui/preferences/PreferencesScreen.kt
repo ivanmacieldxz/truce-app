@@ -1,4 +1,4 @@
-package com.ivanmacieldxz.truce.ui.dashboard
+package com.ivanmacieldxz.truce.ui.preferences
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,9 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.ivanmacieldxz.truce.ui.components.TruceOutlinedButton
 
 @Composable
-fun DashboardScreen() {
+fun PreferencesScreen(
+    viewModel: PreferencesViewModel = hiltViewModel()
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -29,35 +33,25 @@ fun DashboardScreen() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Dashboard",
+                text = "Preferences",
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            Text(
+                text = "(Mocks para modificar configuraciones próximamente)",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
-            
-            Spacer(modifier = Modifier.height(32.dp))
-            
-            Text(
-                text = "- Estadísticas de uso diarias/semanales",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
-            Text(
-                text = "- Apps bloqueadas y limitadores activos",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "- Resumen de Time Requests",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+            TruceOutlinedButton(
+                text = "Cerrar sesión",
+                onClick = { viewModel.logout() }
             )
         }
     }

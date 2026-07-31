@@ -14,6 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 import io.github.jan.supabase.SupabaseClient
@@ -34,11 +35,16 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     setContent {
       val isLoggedIn by viewModel.isUserLoggedIn.collectAsStateWithLifecycle()
+      var lastKnownLoginState by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf<Boolean?>(null) }
+      
+      if (isLoggedIn != null) {
+          lastKnownLoginState = isLoggedIn
+      }
       
       TruceTheme { 
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) { 
-            if (isLoggedIn != null) {
-                MainNavigation(isLoggedIn = isLoggedIn!!) 
+            if (lastKnownLoginState != null) {
+                MainNavigation(isLoggedIn = lastKnownLoginState!!) 
             }
         } 
       }
