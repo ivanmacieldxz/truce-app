@@ -17,4 +17,10 @@ abstract class RepositoryModule {
     abstract fun bindAuthRepository(
         authRepositoryImpl: AuthRepositoryImpl
     ): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindFriendshipsRepository(
+        friendshipsRepositoryImpl: com.ivanmacieldxz.truce.data.repository.FriendshipsRepositoryImpl
+    ): com.ivanmacieldxz.truce.domain.repository.FriendshipsRepository
 }
