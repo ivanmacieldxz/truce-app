@@ -7,17 +7,26 @@ import com.ivanmacieldxz.truce.data.remote.FriendshipRequestDto
 import com.ivanmacieldxz.truce.data.remote.UpdateFriendshipDto
 import com.ivanmacieldxz.truce.data.remote.UserSummaryDto
 import com.ivanmacieldxz.truce.domain.repository.FriendshipsRepository
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.auth
 import retrofit2.HttpException
 import javax.inject.Inject
 
 class FriendshipsRepositoryImpl @Inject constructor(
-    private val apiService: BackendApiService
+    private val apiService: BackendApiService,
+    private val supabaseClient: SupabaseClient
 ) : FriendshipsRepository {
 
     override suspend fun searchUsers(query: String, page: Int, limit: Int): Result<List<UserSummaryDto>> {
         return try {
             val response = apiService.searchUsers(query, page, limit)
-            Result.success(response)
+            val currentUserId = supabaseClient.auth.currentUserOrNull()?.id
+            val filteredResponse = if (currentUserId != null) {
+                response.filter { it.id != currentUserId }
+            } else {
+                response
+            }
+            Result.success(filteredResponse)
         } catch (e: Exception) {
             Result.failure(mapException(e))
         }
