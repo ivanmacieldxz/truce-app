@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.compose.compiler)
@@ -5,6 +7,12 @@ plugins {
   alias(libs.plugins.ksp)
   alias(libs.plugins.hilt)
   alias(libs.plugins.google.services)
+}
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
 }
 
 android {
@@ -16,6 +24,14 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+        
+        val supabaseUrl = localProperties.getProperty("SUPABASE_URL") ?: "\"\""
+        val supabasePublishableKey = localProperties.getProperty("SUPABASE_PUBLISHABLE_KEY") ?: "\"\""
+        val backendUrl = localProperties.getProperty("BACKEND_URL") ?: "\"https://truce-app-backend.onrender.com/api/v1/\""
+        
+        buildConfigField("String", "SUPABASE_URL", supabaseUrl)
+        buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", supabasePublishableKey)
+        buildConfigField("String", "BACKEND_URL", backendUrl)
     }
 
     buildTypes {
@@ -31,7 +47,7 @@ android {
     buildFeatures {
       compose = true
       aidl = false
-      buildConfig = false
+      buildConfig = true
       shaders = false
     }
 
@@ -64,6 +80,7 @@ dependencies {
   implementation(libs.androidx.compose.ui)
   implementation(libs.androidx.compose.ui.tooling.preview)
   implementation(libs.androidx.compose.material3)
+  implementation(libs.androidx.compose.material3.icons.extended)
   // Tooling
   debugImplementation(libs.androidx.compose.ui.tooling)
   // Instrumented tests
@@ -107,7 +124,7 @@ dependencies {
   implementation(libs.firebase.analytics)
 
   // Supabase
-  implementation(libs.supabase.gotrue)
+  implementation(libs.supabase.auth)
   implementation(libs.ktor.client.android)
 
   // DataStore
