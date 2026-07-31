@@ -169,7 +169,7 @@ class AuthViewModel @Inject constructor(
             val result = if (state.isLoginMode) {
                 authRepository.login(state.email, state.password)
             } else {
-                authRepository.signUp(state.email, state.password, state.username) // TODO: Backend needs fullName?
+                authRepository.signUp(state.email, state.password, state.username, state.fullName)
             }
 
             result.onSuccess { message ->

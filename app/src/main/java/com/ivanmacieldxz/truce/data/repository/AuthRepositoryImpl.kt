@@ -47,7 +47,7 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun signUp(email: String, password: String, username: String): Result<String> {
+    override suspend fun signUp(email: String, password: String, username: String, fullName: String): Result<String> {
         return try {
             try {
                 supabaseClient.auth.signOut()
@@ -58,9 +58,10 @@ class AuthRepositoryImpl @Inject constructor(
             val result = supabaseClient.auth.signUpWith(Email) {
                 this.email = email
                 this.password = password
-                // Passing the username to user_metadata
+                // Passing the username and full_name to user_metadata
                 this.data = buildJsonObject {
                     put("username", username)
+                    put("full_name", fullName)
                 }
             }
             
