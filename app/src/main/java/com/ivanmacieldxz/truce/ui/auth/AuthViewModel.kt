@@ -89,6 +89,8 @@ class AuthViewModel @Inject constructor(
 
     private fun nextStep() {
         val state = _uiState.value
+        if (state.isLoading) return
+
         when (state.signupStep) {
             SignupStep.NAME_EMAIL -> {
                 if (!AuthValidator.isValidFullName(state.fullName)) {
@@ -99,16 +101,72 @@ class AuthViewModel @Inject constructor(
                     _uiState.update { it.copy(error = "Por favor, ingresá un correo electrónico válido.") }
                     return
                 }
-                // TODO: Verify email uniqueness in future
-                _uiState.update { it.copy(signupStep = SignupStep.USERNAME, error = null) }
+
+                viewModelScope.launch {
+                    _uiState.update { it.copy(isLoading = true, error = null, debugError = null) }
+                    val result = authRepository.checkEmailAvailability(state.email)
+                    result.onSuccess { available ->
+                        if (available) {
+                            _uiState.update { it.copy(signupStep = SignupStep.USERNAME, isLoading = false, error = null) }
+                        } else {
+                            _uiState.update { it.copy(isLoading = false, error = "Ya existe un usuario registrado con este correo.") }
+                        }
+                    }.onFailure { exception ->
+                        if (exception is com.ivanmacieldxz.truce.domain.repository.AuthException) {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    error = exception.userMessage,
+                                    debugError = exception.debugMessage
+                                )
+                            }
+                        } else {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    error = exception.message ?: "Ocurrió un error al verificar el correo.",
+                                    debugError = exception.stackTraceToString()
+                                )
+                            }
+                        }
+                    }
+                }
             }
             SignupStep.USERNAME -> {
                 if (!AuthValidator.isValidUsername(state.username)) {
                     _uiState.update { it.copy(error = "El nombre de usuario debe tener al menos 5 caracteres y usar solo minúsculas, números, puntos o guiones bajos.") }
                     return
                 }
-                // TODO: Verify username uniqueness in future
-                _uiState.update { it.copy(signupStep = SignupStep.PASSWORD, error = null) }
+
+                viewModelScope.launch {
+                    _uiState.update { it.copy(isLoading = true, error = null, debugError = null) }
+                    val result = authRepository.checkUsernameAvailability(state.username)
+                    result.onSuccess { available ->
+                        if (available) {
+                            _uiState.update { it.copy(signupStep = SignupStep.PASSWORD, isLoading = false, error = null) }
+                        } else {
+                            _uiState.update { it.copy(isLoading = false, error = "El nombre de usuario ya está en uso. Por favor elegí otro.") }
+                        }
+                    }.onFailure { exception ->
+                        if (exception is com.ivanmacieldxz.truce.domain.repository.AuthException) {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    error = exception.userMessage,
+                                    debugError = exception.debugMessage
+                                )
+                            }
+                        } else {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    error = exception.message ?: "Ocurrió un error al verificar el nombre de usuario.",
+                                    debugError = exception.stackTraceToString()
+                                )
+                            }
+                        }
+                    }
+                }
             }
             else -> {}
         }
