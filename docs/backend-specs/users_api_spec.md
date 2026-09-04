@@ -39,22 +39,20 @@ Ninguno.
 
 ---
 
-## 2. Actualizar mi perfil
+## 2. Actualizar FCM Token
 
-Permite actualizar de forma parcial los datos del usuario. Es comúnmente utilizado para registrar o refrescar el token de Firebase Cloud Messaging (`fcmToken`) desde el cliente móvil.
+Permite actualizar de forma aislada el token de Firebase Cloud Messaging (`fcmToken`) desde el cliente móvil.
 
 **Signatura**
-`PATCH /users/me`
+`PATCH /users/me/fcm-token`
 
 **Parámetros**
 Ninguno.
 
 **Cuerpo (Body)**
-Se espera el DTO `UpdateUserDto`. Todos los campos son opcionales, pero los que se envíen serán validados estrictamente.
+Se espera el DTO `UpdateFcmTokenDto`.
 ```json
 {
-  "email": "nuevo_email@ejemplo.com", // Opcional, debe ser un email válido
-  "username": "nuevo_usuario",        // Opcional, mínimo 3 caracteres
   "fcmToken": "nuevo-fcm-token"       // Opcional
 }
 ```
@@ -64,11 +62,9 @@ Se espera el DTO `UpdateUserDto`. Todos los campos son opcionales, pero los que 
 - **200 OK**
   Devuelve el objeto `UserDto` actualizado.
 - **400 Bad Request**
-  Si los datos enviados no pasan las reglas de validación (ej. el email no tiene un formato válido o el username es muy corto).
+  Si los datos enviados no pasan las reglas de validación.
 - **401 Unauthorized**
   Si el token es inválido o no existe.
-- **409 Conflict**
-  Si se intenta actualizar el `email` o `username` a uno que ya pertenece a otro usuario en la plataforma.
 
 ---
 
@@ -109,3 +105,108 @@ Ninguno.
   Si no se provee el parámetro de consulta obligatorio `q`, o si `page`/`limit` no son números válidos.
 - **401 Unauthorized**
   Si el token es inválido o no existe.
+
+---
+
+## 4. Verificar disponibilidad de Nombre de Usuario
+
+Endpoint público útil durante el registro para validar si un nombre de usuario ya está en uso antes de enviar el formulario.
+
+**Signatura**
+`GET /users/check-username`
+
+**Parámetros (Query Params)**
+- `username` (string, **requerido**): El nombre de usuario a verificar.
+
+**Respuestas Posibles**
+
+- **200 OK**
+  ```json
+  {
+    "available": true // o false
+  }
+  ```
+
+---
+
+## 5. Verificar disponibilidad de Correo Electrónico
+
+Endpoint público útil durante el registro para validar si un correo ya está en uso.
+
+**Signatura**
+`GET /users/check-email`
+
+**Parámetros (Query Params)**
+- `email` (string, **requerido**): El email a verificar.
+
+**Respuestas Posibles**
+
+- **200 OK**
+  ```json
+  {
+    "available": true // o false
+  }
+  ```
+
+---
+
+## 6. Cambiar Nombre de Usuario
+
+Permite cambiar el nombre de usuario asegurando validaciones estrictas.
+
+**Signatura**
+`PATCH /users/me/username`
+
+**Cuerpo (Body)**
+```json
+{
+  "username": "nuevo_nombre"
+}
+```
+
+**Respuestas Posibles**
+
+- **200 OK**: Devuelve el perfil del usuario actualizado.
+- **400 Bad Request**: Validación fallida (ej. muy corto, contiene símbolos no permitidos).
+- **409 Conflict**: Nombre de usuario ya en uso por otra persona.
+
+---
+
+## 7. Cambiar Correo Electrónico
+
+Actualiza el correo electrónico del usuario. Operación crítica que primero actualiza el email en el proveedor de autenticación (Supabase Auth) y, si tiene éxito, lo actualiza en la base de datos de la aplicación.
+
+**Signatura**
+`PATCH /users/me/email`
+
+**Cuerpo (Body)**
+```json
+{
+  "email": "nuevo_correo@ejemplo.com"
+}
+```
+
+**Respuestas Posibles**
+
+- **200 OK**: Devuelve el perfil del usuario actualizado.
+- **400 Bad Request**: Validación fallida (no es un correo electrónico válido).
+- **409 Conflict**: El correo ya está registrado en la base de datos o en Supabase Auth.
+- **500 Internal Server Error**: Fallo al contactar con el proveedor de autenticación.
+
+---
+
+## 8. Eliminar Cuenta Definitivamente
+
+Borra el perfil de la base de datos local y purga completamente el usuario de Supabase Auth, revocando todo acceso a la cuenta.
+
+**Signatura**
+`DELETE /users/me`
+
+**Parámetros/Cuerpo**
+Ninguno.
+
+**Respuestas Posibles**
+
+- **204 No Content**: La cuenta se eliminó exitosamente.
+- **401 Unauthorized**: Falta de autenticación.
+- **500 Internal Server Error**: Si la cuenta se borró de la BD pero hubo un fallo borrándola de Supabase Auth.
