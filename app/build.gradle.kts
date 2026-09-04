@@ -7,9 +7,6 @@ plugins {
   alias(libs.plugins.ksp)
   alias(libs.plugins.hilt)
   alias(libs.plugins.google.services)
-
-  id("com.android.application")
-  id("com.google.gms.google-services")
 }
 
 val localProperties = Properties()
