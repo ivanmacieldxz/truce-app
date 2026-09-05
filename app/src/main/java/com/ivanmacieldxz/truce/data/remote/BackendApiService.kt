@@ -27,6 +27,14 @@ data class AvailabilityDto(
     val available: Boolean
 )
 
+data class UpdateUsernameDto(
+    val username: String
+)
+
+data class UpdateEmailDto(
+    val email: String
+)
+
 data class FriendDto(
     val id: String,
     val friendId: String,
@@ -54,6 +62,19 @@ interface BackendApiService {
     
     @GET("users/me")
     suspend fun getMyProfile(): UserDto
+
+    @PATCH("users/me/username")
+    suspend fun updateUsername(
+        @Body body: UpdateUsernameDto
+    ): UserDto
+
+    @PATCH("users/me/email")
+    suspend fun updateEmail(
+        @Body body: UpdateEmailDto
+    ): UserDto
+
+    @DELETE("users/me")
+    suspend fun deleteAccount()
 
     @GET("users")
     suspend fun searchUsers(
