@@ -90,6 +90,24 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun checkUsernameAvailability(username: String): Result<Boolean> {
+        return try {
+            val response = apiService.checkUsername(username)
+            Result.success(response.available)
+        } catch (e: Exception) {
+            Result.failure(mapException(e))
+        }
+    }
+
+    override suspend fun checkEmailAvailability(email: String): Result<Boolean> {
+        return try {
+            val response = apiService.checkEmail(email)
+            Result.success(response.available)
+        } catch (e: Exception) {
+            Result.failure(mapException(e))
+        }
+    }
+
     private fun mapException(e: Exception): Exception {
         return when (e) {
             is retrofit2.HttpException -> {

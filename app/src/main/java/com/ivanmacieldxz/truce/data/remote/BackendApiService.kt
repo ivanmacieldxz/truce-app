@@ -23,6 +23,10 @@ data class UserSummaryDto(
     val username: String
 )
 
+data class AvailabilityDto(
+    val available: Boolean
+)
+
 data class FriendDto(
     val id: String,
     val friendId: String,
@@ -57,6 +61,16 @@ interface BackendApiService {
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 20
     ): List<UserSummaryDto>
+
+    @GET("users/check-username")
+    suspend fun checkUsername(
+        @Query("username") username: String
+    ): AvailabilityDto
+
+    @GET("users/check-email")
+    suspend fun checkEmail(
+        @Query("email") email: String
+    ): AvailabilityDto
 
     @GET("friends")
     suspend fun getFriends(

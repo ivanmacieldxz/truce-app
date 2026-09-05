@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1234567890",
-    "project_id": "truce-app",
-    "storage_bucket": "truce-app.appspot.com"
+    "project_number": "708507818024",
+    "project_id": "truce-app-503817",
+    "storage_bucket": "truce-app-503817.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1234567890:android:abc123def456",
+        "mobilesdk_app_id": "1:708507818024:android:9d2d3cf4b7ea164127bd1d",
         "android_client_info": {
           "package_name": "com.ivanmacieldxz.truce"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "dummy-api-key"
+          "current_key": "AIzaSyDNYlLZQIHK_zQT1XK4JGedwf85vKss0IQ"
         }
       ],
       "services": {
