@@ -35,6 +35,10 @@ data class UpdateEmailDto(
     val email: String
 )
 
+data class UpdateFcmTokenDto(
+    val fcmToken: String?
+)
+
 data class FriendDto(
     val id: String,
     val friendId: String,
@@ -71,6 +75,11 @@ interface BackendApiService {
     @PATCH("users/me/email")
     suspend fun updateEmail(
         @Body body: UpdateEmailDto
+    ): UserDto
+
+    @PATCH("users/me/fcm-token")
+    suspend fun updateFcmToken(
+        @Body body: UpdateFcmTokenDto
     ): UserDto
 
     @DELETE("users/me")
