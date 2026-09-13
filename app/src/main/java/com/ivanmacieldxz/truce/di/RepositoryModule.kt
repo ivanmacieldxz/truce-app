@@ -23,4 +23,10 @@ abstract class RepositoryModule {
     abstract fun bindFriendshipsRepository(
         friendshipsRepositoryImpl: com.ivanmacieldxz.truce.data.repository.FriendshipsRepositoryImpl
     ): com.ivanmacieldxz.truce.domain.repository.FriendshipsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserRepository(
+        userRepositoryImpl: com.ivanmacieldxz.truce.data.repository.UserRepositoryImpl
+    ): com.ivanmacieldxz.truce.domain.repository.UserRepository
 }
