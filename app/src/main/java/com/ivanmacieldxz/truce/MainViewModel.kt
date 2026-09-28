@@ -34,6 +34,7 @@ class MainViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             authRepository.isUserLoggedIn().collect { loggedIn ->
+                android.util.Log.d("FCM", "isUserLoggedIn auth state changed: $loggedIn")
                 if (loggedIn == true) {
                     syncFcmToken()
                 }
@@ -42,14 +43,24 @@ class MainViewModel @Inject constructor(
     }
 
     fun syncFcmToken() {
+        android.util.Log.d("FCM", "Requesting FCM registration token from Firebase...")
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val token = task.result
+                android.util.Log.i("FCM", "Firebase registration token retrieved: $token")
                 if (!token.isNullOrBlank()) {
                     viewModelScope.launch {
-                        userRepository.updateFcmToken(token)
+                        android.util.Log.d("FCM", "Sending FCM token to backend via PATCH /users/me/fcm-token...")
+                        val result = userRepository.updateFcmToken(token)
+                        result.onSuccess { user ->
+                            android.util.Log.i("FCM", "FCM token successfully registered on backend for user: @${user.username} (fcmToken=${user.fcmToken?.take(15)}...)")
+                        }.onFailure { error ->
+                            android.util.Log.e("FCM", "Failed to register FCM token on backend: ${error.message}", error)
+                        }
                     }
                 }
+            } else {
+                android.util.Log.w("FCM", "Failed to obtain FCM token from Firebase", task.exception)
             }
         }
     }

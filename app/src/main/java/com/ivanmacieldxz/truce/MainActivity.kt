@@ -36,6 +36,7 @@ class MainActivity : ComponentActivity() {
     NotificationHelper.createNotificationChannels(this)
     supabaseClient.handleDeeplinks(intent)
     handleNotificationIntent(intent)
+    viewModel.syncFcmToken()
 
     enableEdgeToEdge()
     setContent {

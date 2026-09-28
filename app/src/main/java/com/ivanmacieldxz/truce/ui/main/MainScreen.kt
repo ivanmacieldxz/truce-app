@@ -75,6 +75,10 @@ fun MainScreen(
         }
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.syncFcmToken()
+    }
+
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         val context = LocalContext.current
         val permissionLauncher = rememberLauncherForActivityResult(
