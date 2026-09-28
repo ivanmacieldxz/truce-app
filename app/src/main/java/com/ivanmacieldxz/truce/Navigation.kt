@@ -13,7 +13,7 @@ import com.ivanmacieldxz.truce.ui.auth.AuthScreen
 import com.ivanmacieldxz.truce.ui.main.MainScreen
 
 @Composable
-fun MainNavigation(isLoggedIn: Boolean) {
+fun MainNavigation(isLoggedIn: Boolean, mainViewModel: MainViewModel? = null) {
     val startDestination = if (isLoggedIn) Main else Auth
     val backStack = rememberNavBackStack(startDestination)
     
@@ -35,7 +35,11 @@ fun MainNavigation(isLoggedIn: Boolean) {
                 AuthScreen()
             }
             entry<Main> {
-                MainScreen()
+                if (mainViewModel != null) {
+                    MainScreen(viewModel = mainViewModel)
+                } else {
+                    MainScreen()
+                }
             }
         },
     )

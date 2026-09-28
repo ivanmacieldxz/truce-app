@@ -1,5 +1,6 @@
 package com.ivanmacieldxz.truce
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import com.ivanmacieldxz.truce.services.NotificationHelper
 import com.ivanmacieldxz.truce.theme.TruceTheme
+import com.ivanmacieldxz.truce.ui.main.MainTab
 
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,7 +33,10 @@ class MainActivity : ComponentActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    NotificationHelper.createNotificationChannels(this)
     supabaseClient.handleDeeplinks(intent)
+    handleNotificationIntent(intent)
+    viewModel.syncFcmToken()
 
     enableEdgeToEdge()
     setContent {
@@ -44,10 +50,24 @@ class MainActivity : ComponentActivity() {
       TruceTheme { 
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) { 
             if (lastKnownLoginState != null) {
-                MainNavigation(isLoggedIn = lastKnownLoginState!!) 
+                MainNavigation(isLoggedIn = lastKnownLoginState!!, mainViewModel = viewModel) 
             }
         } 
       }
+    }
+  }
+
+  override fun onNewIntent(intent: Intent) {
+    super.onNewIntent(intent)
+    setIntent(intent)
+    supabaseClient.handleDeeplinks(intent)
+    handleNotificationIntent(intent)
+  }
+
+  private fun handleNotificationIntent(intent: Intent?) {
+    val navTab = intent?.getStringExtra(NotificationHelper.EXTRA_NAV_TAB)
+    if (navTab.equals("inbox", ignoreCase = true)) {
+      viewModel.setTargetTab(MainTab.Inbox)
     }
   }
 }

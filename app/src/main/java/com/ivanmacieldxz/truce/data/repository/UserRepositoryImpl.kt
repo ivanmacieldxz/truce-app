@@ -2,6 +2,7 @@ package com.ivanmacieldxz.truce.data.repository
 
 import com.ivanmacieldxz.truce.data.remote.BackendApiService
 import com.ivanmacieldxz.truce.data.remote.UpdateEmailDto
+import com.ivanmacieldxz.truce.data.remote.UpdateFcmTokenDto
 import com.ivanmacieldxz.truce.data.remote.UpdateUsernameDto
 import com.ivanmacieldxz.truce.data.remote.UserDto
 import com.ivanmacieldxz.truce.domain.repository.UserRepository
@@ -36,6 +37,15 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun updateEmail(email: String): Result<UserDto> {
         return try {
             val updatedUser = apiService.updateEmail(UpdateEmailDto(email))
+            Result.success(updatedUser)
+        } catch (e: Exception) {
+            Result.failure(mapException(e))
+        }
+    }
+
+    override suspend fun updateFcmToken(fcmToken: String?): Result<UserDto> {
+        return try {
+            val updatedUser = apiService.updateFcmToken(UpdateFcmTokenDto(fcmToken))
             Result.success(updatedUser)
         } catch (e: Exception) {
             Result.failure(mapException(e))
